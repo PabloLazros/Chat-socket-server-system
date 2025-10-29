@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Welcome to EchoTalk: Real-Time Chat Server and Client</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f7f6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #login, #chat {
+            width: 100%;
+            max-width: 400px;
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        #login-error {
+            color: #d9534f;
+            display: none;
+            margin-top: 10px;
+        }
+        #messages {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            height: 400px;
+            overflow-y: auto;
+            background-color: #eaeff2;
+            border: 1px solid #d3dce0;
+            border-radius: 8px;
+            padding: 8px;
+        }
+        #messages li {
+            margin: 5px 0;
+            padding: 10px;
+            background-color: #e7f3fe;
+            border: 1px solid #d0e3f0;
+            border-radius: 4px;
+        }
+        form {
+            display: flex;
+            margin-top: 10px;
+        }
+        input[type="text"], input[type="password"] {
+            width: calc(100% - 90px);
+            margin-right: 10px;
+        }
+        button {
+            width: 80px;
+            height: 38px;
+            border: none;
+            background-color: #5cb85c;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #4cae4c;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to EchoTalk</h1>
+        <p>Real-Time Chat Server and Client</p>
+    </header>
+    <div id="login">
+        <input id="username" type="text" placeholder="Username" autofocus />
+        <input id="password" type="password" placeholder="Password" />
+        <button onclick="login()">Login</button>
+        <p id="login-error">Login failed, please try again.</p>
+    </div>
+    <div id="chat" style="display:none;">
+        <ul id="messages"></ul>
+        <form id="form" action="">
+            <input id="m" autocomplete="off" placeholder="Type a message..." /><button type="submit">Send</button>
+        </form>
+    </div>
+    <script>
+        var socket = io();
+
+        document.getElementById('form').onsubmit = function(e) {
+            e.preventDefault();
+            if (document.getElementById('m').value.trim()) {
+                socket.emit('chat message', document.getElementById('m').value);
+                document.getElementById('m').value = '';
+            }
+            return false;
+        };
+
+        socket.on('chat message', function(msg) {
+            var item = document.createElement('li');
+            item.textContent = msg;
+            document.getElementById('messages').appendChild(item);
+            window.scrollTo(0, document.body.scrollHeight);
+        });
+
+        socket.on('login_failure', function() {
+            document.getElementById('login-error').style.display = 'block';
+        });
+
+        socket.on('login_success', function() {
+            document.getElementById('login').style.display = 'none';
+            document.getElementById('chat').style.display = 'block';
+            document.getElementById('m').focus();
+        });
+
+        function login() {
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+            socket.emit('login', {username: username, password: password});
+            document.getElementById('login-error').style.display = 'none'; // Reset error display
+        }
+    </script>
+</body>
+</html>
