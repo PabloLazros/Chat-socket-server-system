@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-EchoTalk is a real-time chat application consisting of a client program (`client.c`) and a server program (`server.c`). Developed by Ahmed Suhail, Wasim Chami, and Yahya Elnamla, this project enables users to connect, authenticate, and engage in live chat sessions. The server efficiently manages multiple client connections, providing a seamless and interactive chatting experience.
+EchoTalk is a real-time chat application consisting of a client program (`client.c`) and a server program (`server.c`), this project enables users to connect, authenticate, and engage in live chat sessions. The server efficiently manages multiple client connections, providing a seamless and interactive chatting experience.
 
 ## Client Program (`client.c`)
 
@@ -49,4 +49,5 @@ EchoTalk is a real-time chat application consisting of a client program (`client
 - **Recommendations:** Implement encryption, secure authentication, and robust error handling for enhanced security in a production-ready chat application.
 
 Feel free to explore and enhance EchoTalk for your specific requirements.
+
 
